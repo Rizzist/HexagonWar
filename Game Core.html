@@ -86,7 +86,7 @@
             camera.upperRadiusLimit = 100;
             camera.attachControl(canvas, true);
 
-            var light = new BABYLON.PointLight("Omni", new BABYLON.Vector3(0, 15, 0), scene);
+            var light = new BABYLON.PointLight("Omni", new BABYLON.Vector3(0, 20, 50), scene);
             scene.clearColor = new BABYLON.Color3(0.5, 0.5, 0.8);
             const nummap = 16
             const Anum = 10
@@ -97,6 +97,9 @@
             var Aqnum = 0
             var Bqnum = 0
             var Cqnum = 0
+
+            const Players = 4
+            var Pnum = 0
             while (numqmap < nummap) {
                 q = Math.random()
                 if (q < 0.33 && Aqnum < Anum) {
@@ -108,31 +111,31 @@
                         function (A) {
                             var mesh = A[0];
                             mesh.isVisible = false;
-
-                            for (var index = 0; index < 1; index++) {
-                                var newInstance = mesh.createInstance("i" + index);
-                                [a, b] = [0, 0]
-                                while (intersect(a, b, map, 1) == true) {
-                                    d = Math.random()
-                                    if (d <= 0.25) {
-                                        a += 1
-                                    } else if (d < 0.5) {
-                                        a -= 1
-                                    } else if (d <= 0.75 + (Math.random() - 0.5) / 10) {
-                                        b += 1
-                                    } else {
-                                        b -= 1
-                                    }
+                            var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
+                            myMaterial.diffuseColor = new BABYLON.Color3(0.7, 0.7, 0.7)
+                            mesh.material = myMaterial
+                            var newInstance = mesh.createInstance("A" + Anum);
+                            [a, b] = [0, 0]
+                            while (intersect(a, b, map, 1) == true) {
+                                d = Math.random()
+                                if (d <= 0.25) {
+                                    a += 1
+                                } else if (d < 0.5) {
+                                    a -= 1
+                                } else if (d <= 0.75 + (Math.random() - 0.5) / 10) {
+                                    b += 1
+                                } else {
+                                    b -= 1
                                 }
-                                [x, y] = HexesToCord(a, b)
-                                newInstance.position.x = x
-                                newInstance.position.z = y
-                                newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
-                                for (var q = -1; q < 2; q++) {
-                                    for (var r = -1; r < 2; r++) {
-                                        if ((q != 1 && r != -1) || (q != -1 && r != 1)) {
-                                            map[50 + a + q][50 + b + r] = 1
-                                        }
+                            }
+                            [x, y] = HexesToCord(a, b)
+                            newInstance.position.x = x
+                            newInstance.position.z = y
+                            newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
+                            for (var q = -1; q < 2; q++) {
+                                for (var r = -1; r < 2; r++) {
+                                    if ((q != 1 && r != -1) || (q != -1 && r != 1)) {
+                                        map[50 + a + q][50 + b + r] = 1
                                     }
                                 }
                             }
@@ -148,40 +151,40 @@
                         function (B) {
                             var mesh = B[0];
                             mesh.isVisible = false;
-
-                            for (var index = 0; index < 1; index++) {
-                                var newInstance = mesh.createInstance("i" + index);
-                                [a, b] = [0, 0]
-                                d = 0
-                                while (intersect(a, b, map, 2) == true) {
-                                    d = Math.random()
-                                    if (d <= 0.25) {
-                                        a += 1
-                                    } else if (d < 0.5) {
-                                        a -= 1
-                                    } else if (d <= 0.75 + (Math.random() - 0.5) / 10) {
-                                        b += 1
-                                    } else {
-                                        b -= 1
-                                    }
+                            var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
+                            myMaterial.diffuseColor = new BABYLON.Color3(0.7, 0.7, 0.7)
+                            mesh.material = myMaterial
+                            var newInstance = mesh.createInstance("B" + Bnum);
+                            [a, b] = [0, 0]
+                            d = 0
+                            while (intersect(a, b, map, 2) == true) {
+                                d = Math.random()
+                                if (d <= 0.25) {
+                                    a += 1
+                                } else if (d < 0.5) {
+                                    a -= 1
+                                } else if (d <= 0.75 + (Math.random() - 0.5) / 10) {
+                                    b += 1
+                                } else {
+                                    b -= 1
                                 }
-                                [x, y] = HexesToCord(a, b)
-                                offsetX = -2.54 * 3.935
-                                offsetY = 2.54 * -3.935
-                                offsetZ = 2.54 * 0.1
-                                newInstance.position.x = x + offsetX
-                                newInstance.position.z = y + offsetY
-                                newInstance.position.y = offsetZ
-                                newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
-                                for (var q = -1; q < 2; q++) {
-                                    for (var r = -1; r < 2; r++) {
-                                        if ((q != 1 && r != -1) || (q != -1 && r != 1)) {
-                                            map[50 + a + q][50 + b + r] = 1
-                                        }
-                                    }
-                                }
-                                map[50 + a + 1][50 + b + 1] = 1
                             }
+                            [x, y] = HexesToCord(a, b)
+                            offsetX = -2.54 * 3.935
+                            offsetY = 2.54 * -3.935
+                            offsetZ = 2.54 * 0.1
+                            newInstance.position.x = x + offsetX
+                            newInstance.position.z = y + offsetY
+                            newInstance.position.y = offsetZ
+                            newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
+                            for (var q = -1; q < 2; q++) {
+                                for (var r = -1; r < 2; r++) {
+                                    if ((q != 1 && r != -1) || (q != -1 && r != 1)) {
+                                        map[50 + a + q][50 + b + r] = 1
+                                    }
+                                }
+                            }
+                            map[50 + a + 1][50 + b + 1] = 1
                         });
                     Bqnum += 1
                     numqmap += 1
@@ -194,50 +197,183 @@
                         function (C) {
                             var mesh = C[0];
                             mesh.isVisible = false;
-                            for (var index = 0; index < 1; index++) {
-                                var newInstance = mesh.createInstance("i" + index);
-                                [a, b] = [0, 0]
-                                d = 0
-                                while (intersect(a, b, map, 3) == true) {
-                                    d = Math.random()
-                                    if (d <= 0.25) {
-                                        a += 1
-                                    } else if (d < 0.5) {
-                                        a -= 1
-                                    } else if (d <= 0.75 + (Math.random() - 0.5) / 10) {
-                                        b += 1
-                                    } else {
-                                        b -= 1
-                                    }
-                                }
-                                [x, y] = HexesToCord(a, b)
-                                offsetX = -2.54 * 3.935
-                                offsetY = 2.54 * 0
-                                offsetZ = 2.54 * 0
-                                newInstance.position.x = x + offsetX
-                                newInstance.position.z = y + offsetY
-                                newInstance.position.y = offsetZ
-                                newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
-                                for (var q = -1; q < 2; q++) {
-                                    for (var r = -1; r < 2; r++) {
-                                        if ((q != 1 && r != -1) || (q != -1 && r != 1)) {
-                                            map[50 + a + q][50 + b + r] = 1
-                                        }
-                                    }
-                                }
-                                map[50 + a + 1][50 + b + 1] = 1
-                                map[50 + a + 1][50 + b - 2] = 1
-                                map[50 + a - 1][50 + b + 2] = 1
-                                map[50 + a - 2][50 + b + 1] = 1
-                                map[50 + a + 2][50 + b - 1] = 1
-                                map[50 + a - 1][50 + b - 1] = 1
 
+                            var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
+                            myMaterial.diffuseColor = new BABYLON.Color3(0.7, 0.7, 0.7)
+                            mesh.material = myMaterial
+
+                            var newInstance = mesh.createInstance("C" + Cnum);
+                            [a, b] = [0, 0]
+                            d = 0
+                            while (intersect(a, b, map, 3) == true) {
+                                d = Math.random()
+                                if (d <= 0.25) {
+                                    a += 1
+                                } else if (d < 0.5) {
+                                    a -= 1
+                                } else if (d <= 0.75 + (Math.random() - 0.5) / 10) {
+                                    b += 1
+                                } else {
+                                    b -= 1
+                                }
                             }
+                            [x, y] = HexesToCord(a, b)
+                            offsetX = -2.54 * 3.935
+                            offsetY = 2.54 * 0
+                            offsetZ = 2.54 * 0
+                            newInstance.position.x = x + offsetX
+                            newInstance.position.z = y + offsetY
+                            newInstance.position.y = offsetZ
+                            newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
+                            for (var q = -1; q < 2; q++) {
+                                for (var r = -1; r < 2; r++) {
+                                    if ((q != 1 && r != -1) || (q != -1 && r != 1)) {
+                                        map[50 + a + q][50 + b + r] = 1
+                                    }
+                                }
+                            }
+                            map[50 + a + 1][50 + b + 1] = 1
+                            map[50 + a + 1][50 + b - 2] = 1
+                            map[50 + a - 1][50 + b + 2] = 1
+                            map[50 + a - 2][50 + b + 1] = 1
+                            map[50 + a + 2][50 + b - 1] = 1
+                            map[50 + a - 1][50 + b - 1] = 1
                         });
                     Cqnum += 1
                     numqmap += 1
                 }
             }
+
+
+            //Players, not map (while & forloop dont work, copy pase code 4 times)
+            //RED Excavator
+            BABYLON.SceneLoader.ImportMesh(
+                null,
+                "https://raw.githubusercontent.com/Rizzist/HexagonWar/master/",
+                "Excavator.obj",
+                scene,
+                function (Exc) {
+                    var mesh = Exc[0];
+                    mesh.isVisible = false;
+
+                    var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
+                    myMaterial.diffuseColor = new BABYLON.Color3(1, 0, 0)
+                    mesh.material = myMaterial
+
+                    var newInstance = mesh.createInstance("Exc" + 0);
+                    [x, y] = HexesToCord(0, 0)
+                    offsetX = -2.54 * 7.3
+                    offsetY = -2.54 * 2.58
+                    offsetZ = 2.54 * 0.3
+                    newInstance.position.x = x + offsetX
+                    newInstance.position.z = y + offsetY
+                    newInstance.position.y = offsetZ
+                    newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
+                    newInstance.picked = true
+                    map[50][50] = 2
+
+                });
+            
+                //YELLOW EXCAVATOR
+                BABYLON.SceneLoader.ImportMesh(
+                null,
+                "https://raw.githubusercontent.com/Rizzist/HexagonWar/master/",
+                "Excavator.obj",
+                scene,
+                function (Exc) {
+                    var mesh = Exc[0];
+                    mesh.isVisible = false;
+
+                    var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
+                    myMaterial.diffuseColor = new BABYLON.Color3(1, 1, 0)
+                    mesh.material = myMaterial
+
+                    var newInstance = mesh.createInstance("Exc" + 1);
+                    [x, y] = HexesToCord(1, 0)
+                    offsetX = -2.54 * 7.3
+                    offsetY = -2.54 * 2.58
+                    offsetZ = 2.54 * 0.3
+                    newInstance.position.x = x + offsetX
+                    newInstance.position.z = y + offsetY
+                    newInstance.position.y = offsetZ
+                    newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
+                    map[50][51] = 2
+
+                });
+
+                //BLUE EXCAVATOR
+                BABYLON.SceneLoader.ImportMesh(
+                null,
+                "https://raw.githubusercontent.com/Rizzist/HexagonWar/master/",
+                "Excavator.obj",
+                scene,
+                function (Exc) {
+                    var mesh = Exc[0];
+                    mesh.isVisible = false;
+
+                    var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
+                    myMaterial.diffuseColor = new BABYLON.Color3(0, 0, 1)
+                    mesh.material = myMaterial
+
+                    var newInstance = mesh.createInstance("Exc" + 2);
+                    [x, y] = HexesToCord(2, 0)
+                    offsetX = -2.54 * 7.3
+                    offsetY = -2.54 * 2.58
+                    offsetZ = 2.54 * 0.3
+                    newInstance.position.x = x + offsetX
+                    newInstance.position.z = y + offsetY
+                    newInstance.position.y = offsetZ
+                    newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
+                    map[52][50] = 2
+
+                });
+
+                //GREEN EXCAVATOR
+                BABYLON.SceneLoader.ImportMesh(
+                null,
+                "https://raw.githubusercontent.com/Rizzist/HexagonWar/master/",
+                "Excavator.obj",
+                scene,
+                function (Exc) {
+                    var mesh = Exc[0];
+                    mesh.isVisible = false;
+
+                    var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
+                    myMaterial.diffuseColor = new BABYLON.Color3(0, 1, 0)
+                    mesh.material = myMaterial
+
+                    var newInstance = mesh.createInstance("Exc" + 3);
+                    [x, y] = HexesToCord(3, 0)
+                    offsetX = -2.54 * 7.3
+                    offsetY = -2.54 * 2.58
+                    offsetZ = 2.54 * 0.3
+                    newInstance.position.x = x + offsetX
+                    newInstance.position.z = y + offsetY
+                    newInstance.position.y = offsetZ
+                    newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
+                    map[53][50] = 2
+
+                });
+
+
+            scene.onPointerDown = function (evt, pickResult) {
+                // if the click hits the ground object, we change the impact position
+                if (pickResult.hit && pickResult.pickedMesh.id == "Exc0"){
+                    if (pickResult.pickedMesh.picked == true) {
+                        pickResult.pickedMesh.material.diffuseColor = new BABYLON.Color3(1, 0, 1)
+                        pickResult.pickedMesh.picked = false
+                    } else {
+                        pickResult.pickedMesh.material.diffuseColor = new BABYLON.Color3(1, 0, 0)
+                        pickResult.pickedMesh.picked = true
+                    }
+                console.log(map, pickResult.pickedMesh.id)
+                }
+            };
+
+            
+            scene.registerBeforeRender(function () {
+                light.position = camera.position;
+            });
             return scene;
         };
         var scene = createScene();
