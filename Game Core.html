@@ -1,4 +1,6 @@
-<!-- RUN WITH ALT + B -->>
+<!-- RUN WITH ALT + B 
+                                      
+-->>
 <!DOCTYPE html>
 <html>
 
@@ -76,7 +78,9 @@
         var value = 0; // by default
         var map = [...Array(100)].map(e => Array(100).fill(value));
         //y, x instead of x, y. remember that for map
-
+        var disk = []
+        var diskNum = 0
+        var resetted = false
         var createScene = function () {
             var scene = new BABYLON.Scene(engine);
 
@@ -130,6 +134,11 @@
                                 }
                             }
                             [x, y] = HexesToCord(a, b)
+
+                            dOffsetZ = 0.7
+                            dOffsetX = -0.01
+                            dOffsetY = -2.05
+
                             newInstance.position.x = x
                             newInstance.position.z = y
                             newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
@@ -263,14 +272,16 @@
 
                     var newInstance = mesh.createInstance("Exc" + 0);
                     [x, y] = HexesToCord(0, 0)
-                    offsetX = -2.54 * 7.3
-                    offsetY = -2.54 * 2.58
-                    offsetZ = 2.54 * 0.3
-                    newInstance.position.x = x + offsetX
-                    newInstance.position.z = y + offsetY
-                    newInstance.position.y = offsetZ
+                    newInstance.offsetX = -2.54 * 7.3
+                    newInstance.offsetY = -2.54 * 2.58
+                    newInstance.offsetZ = 2.54 * 0.3
+                    newInstance.hex = [0, 0]
+                    newInstance.position.x = x + newInstance.offsetX
+                    newInstance.position.z = y + newInstance.offsetY
+                    newInstance.position.y = newInstance.offsetZ
                     newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
                     newInstance.picked = false
+                    newInstance.isDisk = false
                     map[50][50] = 2
 
                 });
@@ -291,15 +302,17 @@
 
                     var newInstance = mesh.createInstance("Exc" + 1);
                     [x, y] = HexesToCord(1, 0)
-                    offsetX = -2.54 * 7.3
-                    offsetY = -2.54 * 2.58
-                    offsetZ = 2.54 * 0.3
-                    newInstance.position.x = x + offsetX
-                    newInstance.position.z = y + offsetY
-                    newInstance.position.y = offsetZ
+                    newInstance.offsetX = -2.54 * 7.3
+                    newInstance.offsetY = -2.54 * 2.58
+                    newInstance.offsetZ = 2.54 * 0.3
+                    newInstance.hex = [1, 0]
+                    newInstance.position.x = x + newInstance.offsetX
+                    newInstance.position.z = y + newInstance.offsetY
+                    newInstance.position.y = newInstance.offsetZ
                     newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
                     newInstance.picked = false
-                    map[50][51] = 2
+                    newInstance.isDisk = false
+                    map[51][50] = 2
 
                 });
 
@@ -319,14 +332,16 @@
 
                     var newInstance = mesh.createInstance("Exc" + 2);
                     [x, y] = HexesToCord(2, 0)
-                    offsetX = -2.54 * 7.3
-                    offsetY = -2.54 * 2.58
-                    offsetZ = 2.54 * 0.3
-                    newInstance.position.x = x + offsetX
-                    newInstance.position.z = y + offsetY
-                    newInstance.position.y = offsetZ
+                    newInstance.offsetX = -2.54 * 7.3
+                    newInstance.offsetY = -2.54 * 2.58
+                    newInstance.offsetZ = 2.54 * 0.3
+                    newInstance.hex = [2, 0]
+                    newInstance.position.x = x + newInstance.offsetX
+                    newInstance.position.z = y + newInstance.offsetY
+                    newInstance.position.y = newInstance.offsetZ
                     newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
                     newInstance.picked = false
+                    newInstance.isDisk = false
                     map[52][50] = 2
 
                 });
@@ -347,75 +362,217 @@
 
                     var newInstance = mesh.createInstance("Exc" + 3);
                     [x, y] = HexesToCord(3, 0)
-                    offsetX = -2.54 * 7.3
-                    offsetY = -2.54 * 2.58
-                    offsetZ = 2.54 * 0.3
-                    newInstance.position.x = x + offsetX
-                    newInstance.position.z = y + offsetY
-                    newInstance.position.y = offsetZ
+                    newInstance.offsetX = -2.54 * 7.3
+                    newInstance.offsetY = -2.54 * 2.58
+                    newInstance.offsetZ = 2.54 * 0.3
+                    newInstance.hex = [3, 0]
+                    newInstance.position.x = x + newInstance.offsetX
+                    newInstance.position.z = y + newInstance.offsetY
+                    newInstance.position.y = newInstance.offsetZ
                     newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
                     newInstance.picked = false
+                    newInstance.isDisk = false
                     map[53][50] = 2
-
                 });
 
 
             scene.onPointerDown = function (evt, pickResult) {
+                if (resetted == false) {
+                    var hexes = []
+                    var upper = 0
+                    for (var i = 0; i < 100; i++) {
+                        for (var j = 0; j < 100; j++) {
+                            if (map[i][j] != 0) {
+                                hexes.push([i, j])
+                                upper += 1
+                            }
+                        }
+                    }
+                    for (var i = 0; i < upper; i++) {
+                        var [u, v] = HexesToCord(hexes[i][0] - 50, hexes[i][1] - 50)
+                        disk[diskNum] = BABYLON.MeshBuilder.CreateDisc('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - 50), { radius: 1, arc: 1, tessellation: 6, sideOrientation: BABYLON.Mesh.DOUBLESIDE }, scene);
+                        var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
+                        myMaterial.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
+                        scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - 50)).material = myMaterial
+                        scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - 50)).rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD)
+                        scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - 50)).position.y = dOffsetZ
+                        scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - 50)).position.x = u + dOffsetX
+                        scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - 50)).position.z = v + dOffsetY
+                        scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - 50)).isVisible = false
+                        scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - 50)).isDisk = true
+                        scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - 50)).hex = [hexes[i][0] - 50, hexes[i][1] - 50]
+                        diskNum += 1
+
+                    }
+                    resetted = true
+                }
                 // if the click hits the ground object, we change the impact position
                 if (pickResult.hit) {
-                    if (pickResult.pickedMesh.id == "Exc0") {
+                    if (pickResult.pickedMesh.id == "Exc0" && scene.getMeshByID('Exc1').picked == false
+                        && scene.getMeshByID('Exc2').picked == false && scene.getMeshByID('Exc3').picked == false) {
                         if (pickResult.pickedMesh.picked == false) {
-                            scene.getMeshByID('Exc0').material.diffuseColor = new BABYLON.Color3(1, 0, 1)
+                            scene.getMeshByID('Exc0').material.diffuseColor = new BABYLON.Color3(0.8, 0.4, 0.9)
                             scene.getMeshByID('Exc0').picked = true
-
+                            var [u, v] = scene.getMeshByID('Exc0').hex
+                            for (var q = -1; q < 2; q++) {
+                                for (var r = -1; r < 2; r++) {
+                                    if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][50 + v + r] != 0) {
+                                        scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
+                                        scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = true
+                                    }
+                                }
+                            }
+                        } else {
+                            scene.getMeshByID('Exc0').material.diffuseColor = new BABYLON.Color3(1, 0, 0)
+                            scene.getMeshByID('Exc0').picked = false
+                            var [u, v] = scene.getMeshByID('Exc0').hex
+                            for (var q = -1; q < 2; q++) {
+                                for (var r = -1; r < 2; r++) {
+                                    if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][50 + v + r] != 0) {
+                                        scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
+                                        scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = false
+                                    }
+                                }
+                            }
                         }
-                    } else {
-                        scene.getMeshByID('Exc0').material.diffuseColor = new BABYLON.Color3(1, 0, 0)
-                        scene.getMeshByID('Exc0').picked = false
                     }
-
-                    if (pickResult.pickedMesh.id == "Exc1") {
+                    if (pickResult.pickedMesh.id == "Exc1" && scene.getMeshByID('Exc0').picked == false
+                        && scene.getMeshByID('Exc2').picked == false && scene.getMeshByID('Exc3').picked == false) {
                         if (pickResult.pickedMesh.picked == false) {
-                            scene.getMeshByID('Exc1').material.diffuseColor = new BABYLON.Color3(1, 0, 1)
+                            scene.getMeshByID('Exc1').material.diffuseColor = new BABYLON.Color3(0.8, 0.4, 0.9)
                             scene.getMeshByID('Exc1').picked = true
+                            var [u, v] = scene.getMeshByID('Exc1').hex
+                            for (var q = -1; q < 2; q++) {
+                                for (var r = -1; r < 2; r++) {
+                                    if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][50 + v + r] != 0) {
+                                        scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
+                                        scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = true
+                                    }
+                                }
+                            }
+                        } else {
+                            scene.getMeshByID('Exc1').material.diffuseColor = new BABYLON.Color3(1, 1, 0)
+                            scene.getMeshByID('Exc1').picked = false
+                            var [u, v] = scene.getMeshByID('Exc1').hex
+                            for (var q = -1; q < 2; q++) {
+                                for (var r = -1; r < 2; r++) {
+                                    if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][50 + v + r] != 0) {
+                                        scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
+                                        scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = false
+                                    }
+                                }
+                            }
 
                         }
-                    } else {
-                        scene.getMeshByID('Exc1').material.diffuseColor = new BABYLON.Color3(1, 1, 0)
-                        scene.getMeshByID('Exc1').picked = false
                     }
 
-                    if (pickResult.pickedMesh.id == "Exc2") {
+
+
+                    if (pickResult.pickedMesh.id == "Exc2" && scene.getMeshByID('Exc1').picked == false
+                        && scene.getMeshByID('Exc0').picked == false && scene.getMeshByID('Exc3').picked == false) {
                         if (pickResult.pickedMesh.picked == false) {
-                            scene.getMeshByID('Exc2').material.diffuseColor = new BABYLON.Color3(1, 0, 1)
+                            scene.getMeshByID('Exc2').material.diffuseColor = new BABYLON.Color3(0.8, 0.4, 0.9)
                             scene.getMeshByID('Exc2').picked = true
+                            var [u, v] = scene.getMeshByID('Exc2').hex
+                            for (var q = -1; q < 2; q++) {
+                                for (var r = -1; r < 2; r++) {
+                                    if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][50 + v + r] != 0) {
+                                        scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
+                                        scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = true
+                                    }
+                                }
+                            }
+                        } else {
+                            scene.getMeshByID('Exc2').material.diffuseColor = new BABYLON.Color3(0, 0, 1)
+                            scene.getMeshByID('Exc2').picked = false
+                            var [u, v] = scene.getMeshByID('Exc2').hex
+                            for (var q = -1; q < 2; q++) {
+                                for (var r = -1; r < 2; r++) {
+                                    if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][50 + v + r] != 0) {
+                                        scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
+                                        scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = false
+                                    }
+                                }
+                            }
 
                         }
-                    } else {
-                        scene.getMeshByID('Exc2').material.diffuseColor = new BABYLON.Color3(0, 0, 1)
-                        scene.getMeshByID('Exc2').picked = false
                     }
 
-                    if (pickResult.pickedMesh.id == "Exc3") {
+
+
+
+                    if (pickResult.pickedMesh.id == "Exc3" && scene.getMeshByID('Exc1').picked == false
+                        && scene.getMeshByID('Exc2').picked == false && scene.getMeshByID('Exc0').picked == false) {
                         if (pickResult.pickedMesh.picked == false) {
-                            scene.getMeshByID('Exc3').material.diffuseColor = new BABYLON.Color3(1, 0, 1)
+                            scene.getMeshByID('Exc3').material.diffuseColor = new BABYLON.Color3(0.8, 0.4, 0.9)
                             scene.getMeshByID('Exc3').picked = true
+                            var [u, v] = scene.getMeshByID('Exc3').hex
+                            for (var q = -1; q < 2; q++) {
+                                for (var r = -1; r < 2; r++) {
+                                    if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][50 + v + r] != 0) {
+                                        scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
+                                        scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = true
+                                    }
+                                }
+                            }
+                        } else {
+                            scene.getMeshByID('Exc3').material.diffuseColor = new BABYLON.Color3(0, 1, 0)
+                            scene.getMeshByID('Exc3').picked = false
+                            var [u, v] = scene.getMeshByID('Exc3').hex
+                            for (var q = -1; q < 2; q++) {
+                                for (var r = -1; r < 2; r++) {
+                                    if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][50 + v + r] != 0) {
+                                        scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
+                                        scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = false
+                                    }
+                                }
+                            }
 
                         }
-                    } else {
-                        scene.getMeshByID('Exc3').material.diffuseColor = new BABYLON.Color3(0, 1, 0)
-                        scene.getMeshByID('Exc3').picked = false
+                    }
+
+
+
+
+                    if (pickResult.pickedMesh.isDisk == true) {
+                        for (i = 0; i < 4; i++) {
+                            if (scene.getMeshByID('Exc' + i).picked == true) {
+                                var [u, v] = scene.getMeshByID('Exc' + i).hex
+                                for (var q = -1; q < 2; q++) {
+                                    for (var r = -1; r < 2; r++) {
+                                        if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][50 + v + r] != 0) {
+                                            scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
+                                            scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = false
+                                        }
+                                    }
+                                }
+                                scene.getMeshByID('Exc' + i).hex = pickResult.pickedMesh.hex
+                                var [m, n] = HexesToCord(scene.getMeshByID('Exc' + i).hex[0], scene.getMeshByID('Exc' + i).hex[1])
+                                scene.getMeshByID('Exc' + i).position.x = m + scene.getMeshByID('Exc' + i).offsetX
+                                scene.getMeshByID('Exc' + i).position.z = n + scene.getMeshByID('Exc' + i).offsetY
+                                scene.getMeshByID('Exc' + i).position.y = 0 + scene.getMeshByID('Exc' + i).offsetZ
+
+                                var [u, v] = scene.getMeshByID('Exc'+i).hex
+                                for (var q = -1; q < 2; q++) {
+                                    for (var r = -1; r < 2; r++) {
+                                        if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][50 + v + r] != 0) {
+                                            scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
+                                            scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = true
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             };
-
-
             scene.registerBeforeRender(function () {
                 light.position = camera.position;
             });
             return scene;
         };
         var scene = createScene();
+
         engine.runRenderLoop(function () {
             scene.render();
         });
