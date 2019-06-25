@@ -76,6 +76,7 @@
         var value = 0; // by default
         var map = [...Array(100)].map(e => Array(100).fill(value));
         //y, x instead of x, y. remember that for map
+
         var createScene = function () {
             var scene = new BABYLON.Scene(engine);
 
@@ -269,13 +270,13 @@
                     newInstance.position.z = y + offsetY
                     newInstance.position.y = offsetZ
                     newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
-                    newInstance.picked = true
+                    newInstance.picked = false
                     map[50][50] = 2
 
                 });
-            
-                //YELLOW EXCAVATOR
-                BABYLON.SceneLoader.ImportMesh(
+
+            //YELLOW EXCAVATOR
+            BABYLON.SceneLoader.ImportMesh(
                 null,
                 "https://raw.githubusercontent.com/Rizzist/HexagonWar/master/",
                 "Excavator.obj",
@@ -297,12 +298,13 @@
                     newInstance.position.z = y + offsetY
                     newInstance.position.y = offsetZ
                     newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
+                    newInstance.picked = false
                     map[50][51] = 2
 
                 });
 
-                //BLUE EXCAVATOR
-                BABYLON.SceneLoader.ImportMesh(
+            //BLUE EXCAVATOR
+            BABYLON.SceneLoader.ImportMesh(
                 null,
                 "https://raw.githubusercontent.com/Rizzist/HexagonWar/master/",
                 "Excavator.obj",
@@ -324,12 +326,13 @@
                     newInstance.position.z = y + offsetY
                     newInstance.position.y = offsetZ
                     newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
+                    newInstance.picked = false
                     map[52][50] = 2
 
                 });
 
-                //GREEN EXCAVATOR
-                BABYLON.SceneLoader.ImportMesh(
+            //GREEN EXCAVATOR
+            BABYLON.SceneLoader.ImportMesh(
                 null,
                 "https://raw.githubusercontent.com/Rizzist/HexagonWar/master/",
                 "Excavator.obj",
@@ -351,6 +354,7 @@
                     newInstance.position.z = y + offsetY
                     newInstance.position.y = offsetZ
                     newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
+                    newInstance.picked = false
                     map[53][50] = 2
 
                 });
@@ -358,19 +362,54 @@
 
             scene.onPointerDown = function (evt, pickResult) {
                 // if the click hits the ground object, we change the impact position
-                if (pickResult.hit && pickResult.pickedMesh.id == "Exc0"){
-                    if (pickResult.pickedMesh.picked == true) {
-                        pickResult.pickedMesh.material.diffuseColor = new BABYLON.Color3(1, 0, 1)
-                        pickResult.pickedMesh.picked = false
+                if (pickResult.hit) {
+                    if (pickResult.pickedMesh.id == "Exc0") {
+                        if (pickResult.pickedMesh.picked == false) {
+                            scene.getMeshByID('Exc0').material.diffuseColor = new BABYLON.Color3(1, 0, 1)
+                            scene.getMeshByID('Exc0').picked = true
+
+                        }
                     } else {
-                        pickResult.pickedMesh.material.diffuseColor = new BABYLON.Color3(1, 0, 0)
-                        pickResult.pickedMesh.picked = true
+                        scene.getMeshByID('Exc0').material.diffuseColor = new BABYLON.Color3(1, 0, 0)
+                        scene.getMeshByID('Exc0').picked = false
                     }
-                console.log(map, pickResult.pickedMesh.id)
+
+                    if (pickResult.pickedMesh.id == "Exc1") {
+                        if (pickResult.pickedMesh.picked == false) {
+                            scene.getMeshByID('Exc1').material.diffuseColor = new BABYLON.Color3(1, 0, 1)
+                            scene.getMeshByID('Exc1').picked = true
+
+                        }
+                    } else {
+                        scene.getMeshByID('Exc1').material.diffuseColor = new BABYLON.Color3(1, 1, 0)
+                        scene.getMeshByID('Exc1').picked = false
+                    }
+
+                    if (pickResult.pickedMesh.id == "Exc2") {
+                        if (pickResult.pickedMesh.picked == false) {
+                            scene.getMeshByID('Exc2').material.diffuseColor = new BABYLON.Color3(1, 0, 1)
+                            scene.getMeshByID('Exc2').picked = true
+
+                        }
+                    } else {
+                        scene.getMeshByID('Exc2').material.diffuseColor = new BABYLON.Color3(0, 0, 1)
+                        scene.getMeshByID('Exc2').picked = false
+                    }
+
+                    if (pickResult.pickedMesh.id == "Exc3") {
+                        if (pickResult.pickedMesh.picked == false) {
+                            scene.getMeshByID('Exc3').material.diffuseColor = new BABYLON.Color3(1, 0, 1)
+                            scene.getMeshByID('Exc3').picked = true
+
+                        }
+                    } else {
+                        scene.getMeshByID('Exc3').material.diffuseColor = new BABYLON.Color3(0, 1, 0)
+                        scene.getMeshByID('Exc3').picked = false
+                    }
                 }
             };
 
-            
+
             scene.registerBeforeRender(function () {
                 light.position = camera.position;
             });
