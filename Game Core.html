@@ -332,18 +332,18 @@
                     mesh.material = myMaterial
 
                     var newInstance = mesh.createInstance("Exc" + 2);
-                    [x, y] = HexesToCord(1, 1)
+                    [x, y] = HexesToCord(0, -1)
                     newInstance.offsetX = -2.54 * 7.3
                     newInstance.offsetY = -2.54 * 2.58
                     newInstance.offsetZ = 2.54 * 0.3
-                    newInstance.hex = [1, 1]
+                    newInstance.hex = [0, -1]
                     newInstance.position.x = x + newInstance.offsetX
                     newInstance.position.z = y + newInstance.offsetY
                     newInstance.position.y = newInstance.offsetZ
                     newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
                     newInstance.picked = false
                     newInstance.isDisk = false
-                    map[51][shift+1] = 2
+                    map[49][shift] = 2
 
                 });
 
