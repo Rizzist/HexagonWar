@@ -78,21 +78,32 @@
         function translation(i) {
             dir = [0, 0]
             r = Math.random()
-            if (r < 0.33) {
-                if (i == 0) { dir = [1, 0] }
-                if (i == 1) { dir = [1, 1] }
-                if (i == 2) { dir = [0, 1] }
-                if (i == 3) { dir = [-1, 0] }
-            } else if (r < 0.66) {
-                if (i == 0) { dir = [1, 1] }
-                if (i == 1) { dir = [0, 1] }
-                if (i == 2) { dir = [-1, 0] }
-                if (i == 3) { dir = [-1, -1] }
-            } else {
+
+            if (r < 0.21) {
                 if (i == 0) { dir = [0, 1] }
-                if (i == 1) { dir = [-1, 0] }
-                if (i == 2) { dir = [-1, -1] }
-                if (i == 3) { dir = [0, -1] }
+                if (i == 1) { dir = [1, -1] }
+                if (i == 2) { dir = [1, -1] }
+                if (i == 3) { dir = [0, 1] }
+            } else if (r < 0.43) {
+                if (i == 0) { dir = [0, 1] }
+                if (i == 1) { dir = [1, 0] }
+                if (i == 2) { dir = [-1, 0] }
+                if (i == 3) { dir = [-1, 0] }
+            } else if (r <0.7) {
+                if (i == 0) { dir = [1, 0] }
+                if (i == 1) { dir = [0, -1] }
+                if (i == 2) { dir = [0, -1] }
+                if (i == 3) { dir = [-1, 1] }
+            } else if (r < 0.87) {
+                if (i == 0) { dir = [-1, 1] }
+                if (i == 1) { dir = [0, 1] }
+                if (i == 2) { dir = [0, -1]}
+                if (i == 3) { dir = [0, 1]}
+            } else {
+                if (i == 0) { dir = [0, -1] }
+                if (i == 1) { dir = [-1, 0]}
+                if (i == 2) { dir = [0, 1]}
+                if (i == 3) { dir = [1, 0]}
             }
             return dir
         }
@@ -103,7 +114,7 @@
         var disk = []
         var diskNum = 0
         var resetted = false
-        const shift = 15
+        const shift = 50
 
         const ExcMove = 2
         const SoldierMove = 3
@@ -116,7 +127,7 @@
             var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 0, new BABYLON.Vector3(0, 0, 0), scene);
             camera.setPosition(new BABYLON.Vector3(0, 20, 50));
             camera.upperBetaLimit = (Math.PI / 2) * 0.9;
-            camera.lowerRadiusLimit = 15;
+            camera.lowerRadiusLimit = 10;
             camera.upperRadiusLimit = 100;
             camera.attachControl(canvas, true);
 
@@ -435,6 +446,25 @@
                         scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - shift)).hex = [hexes[i][0] - 50, hexes[i][1] - shift]
                         diskNum += 1
                     }
+                    for (var w = 0; w<2000; w++) {
+                    for(var i = 0; i < 4; i++) {
+                        try {throw i}
+                        catch (j) {
+                            gett = translation(j)
+                            var [a, b] = scene.getMeshByID("Exc"+j).hex
+                            if (map[50+a+gett[0]][shift+b+gett[1]] 
+                            != 0){
+                                map[50+a][shift+b] = 1
+                                map[50+a+gett[0]][shift+b+gett[1]] = 2
+                                var [x, y] = HexesToCord(a+gett[0], b+gett[1])
+                                scene.getMeshByID("Exc"+j).hex = [a+gett[0], b+gett[1]]
+                                scene.getMeshByID("Exc"+j).position.x = x + scene.getMeshByID("Exc"+j).offsetX
+                                scene.getMeshByID("Exc"+j).position.z = y + scene.getMeshByID("Exc"+j).offsetY
+                            }
+                        }
+                    }
+                    } console.log(map)
+
                     resetted = true
                 }
                 //check if any dudes picked
@@ -567,14 +597,8 @@
                         try { throw l }
                         catch (p) {
                             var angle = camera.alpha - scene.getMeshByID('' + p).rotval
-                            scene.getMeshByID('' + p).rotval += angle
-                            if (scene.getMeshByID('' + p).rotval > 2 * Math.PI) {
-                                scene.getMeshByID('' + p).rotval -= 2 * Math.PI
-                            }
-                            if (scene.getMeshByID('' + p).rotval < -2 * Math.PI) {
-                                scene.getMeshByID('' + p).rotval += 2 * Math.PI
-                            }
-                            scene.getMeshByID('' + p).rotate(BABYLON.Axis.Z, angle)
+                            scene.getMeshByID('' + p).rotval += angle/10
+                            scene.getMeshByID('' + p).rotate(BABYLON.Axis.Z, angle/10)
                         }
                     }
                 }
