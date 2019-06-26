@@ -51,24 +51,24 @@
             for (var q = -1; q < 2; q++) {
                 for (var r = -1; r < 2; r++) {
                     if ((q != 1 && r != -1) || (q != -1 && r != 1)) {
-                        if (map[50 + a + q][50 + b + r] == 1) {
+                        if (map[50 + a + q][shift + b + r] == 1) {
                             isit = true
                         }
                     }
                 }
             }
             if (type == 2) {
-                if (map[50 + a + 1][50 + b + 1] == 1) {
+                if (map[50 + a + 1][shift + b + 1] == 1) {
                     isit = true
                 }
             }
             if (type == 3) {
-                if (map[50 + a + 1][50 + b + 1] == 1 ||
-                    map[50 + a + 1][50 + b - 2] == 1 ||
-                    map[50 + a - 1][50 + b + 2] == 1 ||
-                    map[50 + a - 2][50 + b + 1] == 1 ||
-                    map[50 + a - 1][50 + b - 1] == 1 ||
-                    map[50 + a + 2][50 + b - 1] == 1) {
+                if (map[50 + a + 1][shift + b + 1] == 1 ||
+                    map[50 + a + 1][shift + b - 2] == 1 ||
+                    map[50 + a - 1][shift + b + 2] == 1 ||
+                    map[50 + a - 2][shift + b + 1] == 1 ||
+                    map[50 + a - 1][shift + b - 1] == 1 ||
+                    map[50 + a + 2][shift + b - 1] == 1) {
                     isit = true
                 }
             }
@@ -81,6 +81,7 @@
         var disk = []
         var diskNum = 0
         var resetted = false
+        const shift = 15
         var createScene = function () {
             var scene = new BABYLON.Scene(engine);
 
@@ -145,7 +146,7 @@
                             for (var q = -1; q < 2; q++) {
                                 for (var r = -1; r < 2; r++) {
                                     if ((q != 1 && r != -1) || (q != -1 && r != 1)) {
-                                        map[50 + a + q][50 + b + r] = 1
+                                        map[50 + a + q][shift + b + r] = 1
                                     }
                                 }
                             }
@@ -190,11 +191,11 @@
                             for (var q = -1; q < 2; q++) {
                                 for (var r = -1; r < 2; r++) {
                                     if ((q != 1 && r != -1) || (q != -1 && r != 1)) {
-                                        map[50 + a + q][50 + b + r] = 1
+                                        map[50 + a + q][shift + b + r] = 1
                                     }
                                 }
                             }
-                            map[50 + a + 1][50 + b + 1] = 1
+                            map[50 + a + 1][shift + b + 1] = 1
                         });
                     Bqnum += 1
                     numqmap += 1
@@ -238,16 +239,16 @@
                             for (var q = -1; q < 2; q++) {
                                 for (var r = -1; r < 2; r++) {
                                     if ((q != 1 && r != -1) || (q != -1 && r != 1)) {
-                                        map[50 + a + q][50 + b + r] = 1
+                                        map[50 + a + q][shift + b + r] = 1
                                     }
                                 }
                             }
-                            map[50 + a + 1][50 + b + 1] = 1
-                            map[50 + a + 1][50 + b - 2] = 1
-                            map[50 + a - 1][50 + b + 2] = 1
-                            map[50 + a - 2][50 + b + 1] = 1
-                            map[50 + a + 2][50 + b - 1] = 1
-                            map[50 + a - 1][50 + b - 1] = 1
+                            map[50 + a + 1][shift + b + 1] = 1
+                            map[50 + a + 1][shift + b - 2] = 1
+                            map[50 + a - 1][shift + b + 2] = 1
+                            map[50 + a - 2][shift + b + 1] = 1
+                            map[50 + a + 2][shift + b - 1] = 1
+                            map[50 + a - 1][shift + b - 1] = 1
                         });
                     Cqnum += 1
                     numqmap += 1
@@ -282,7 +283,7 @@
                     newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
                     newInstance.picked = false
                     newInstance.isDisk = false
-                    map[50][50] = 2
+                    map[50][shift] = 2
 
                 });
 
@@ -312,7 +313,7 @@
                     newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
                     newInstance.picked = false
                     newInstance.isDisk = false
-                    map[51][50] = 2
+                    map[50][shift+1] = 2
 
                 });
 
@@ -331,7 +332,7 @@
                     mesh.material = myMaterial
 
                     var newInstance = mesh.createInstance("Exc" + 2);
-                    [x, y] = HexesToCord(2, 0)
+                    [x, y] = HexesToCord(1, 1)
                     newInstance.offsetX = -2.54 * 7.3
                     newInstance.offsetY = -2.54 * 2.58
                     newInstance.offsetZ = 2.54 * 0.3
@@ -342,7 +343,7 @@
                     newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
                     newInstance.picked = false
                     newInstance.isDisk = false
-                    map[52][50] = 2
+                    map[51][shift+1] = 2
 
                 });
 
@@ -361,7 +362,7 @@
                     mesh.material = myMaterial
 
                     var newInstance = mesh.createInstance("Exc" + 3);
-                    [x, y] = HexesToCord(3, 0)
+                    [x, y] = HexesToCord(0, 1)
                     newInstance.offsetX = -2.54 * 7.3
                     newInstance.offsetY = -2.54 * 2.58
                     newInstance.offsetZ = 2.54 * 0.3
@@ -372,7 +373,7 @@
                     newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
                     newInstance.picked = false
                     newInstance.isDisk = false
-                    map[53][50] = 2
+                    map[51][shift] = 2
                 });
 
 
@@ -389,18 +390,18 @@
                         }
                     }
                     for (var i = 0; i < upper; i++) {
-                        var [u, v] = HexesToCord(hexes[i][0] - 50, hexes[i][1] - 50)
-                        disk[diskNum] = BABYLON.MeshBuilder.CreateDisc('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - 50), { radius: 1, arc: 1, tessellation: 6, sideOrientation: BABYLON.Mesh.DOUBLESIDE }, scene);
+                        var [u, v] = HexesToCord(hexes[i][0] - 50, hexes[i][1] - shift)
+                        disk[diskNum] = BABYLON.MeshBuilder.CreateDisc('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - shift), { radius: 1, arc: 1, tessellation: 6, sideOrientation: BABYLON.Mesh.DOUBLESIDE }, scene);
                         var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
                         myMaterial.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
-                        scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - 50)).material = myMaterial
-                        scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - 50)).rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD)
-                        scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - 50)).position.y = dOffsetZ
-                        scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - 50)).position.x = u + dOffsetX
-                        scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - 50)).position.z = v + dOffsetY
-                        scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - 50)).isVisible = false
-                        scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - 50)).isDisk = true
-                        scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - 50)).hex = [hexes[i][0] - 50, hexes[i][1] - 50]
+                        scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - shift)).material = myMaterial
+                        scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - shift)).rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD)
+                        scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - shift)).position.y = dOffsetZ
+                        scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - shift)).position.x = u + dOffsetX
+                        scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - shift)).position.z = v + dOffsetY
+                        scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - shift)).isVisible = false
+                        scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - shift)).isDisk = true
+                        scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - shift)).hex = [hexes[i][0] - 50, hexes[i][1] - shift]
                         diskNum += 1
 
                     }
@@ -416,7 +417,7 @@
                             var [u, v] = scene.getMeshByID('Exc0').hex
                             for (var q = -1; q < 2; q++) {
                                 for (var r = -1; r < 2; r++) {
-                                    if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][50 + v + r] != 0) {
+                                    if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][shift + v + r] != 0) {
                                         scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
                                         scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = true
                                     }
@@ -428,7 +429,7 @@
                             var [u, v] = scene.getMeshByID('Exc0').hex
                             for (var q = -1; q < 2; q++) {
                                 for (var r = -1; r < 2; r++) {
-                                    if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][50 + v + r] != 0) {
+                                    if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][shift + v + r] != 0) {
                                         scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
                                         scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = false
                                     }
@@ -436,6 +437,9 @@
                             }
                         }
                     }
+
+
+
                     if (pickResult.pickedMesh.id == "Exc1" && scene.getMeshByID('Exc0').picked == false
                         && scene.getMeshByID('Exc2').picked == false && scene.getMeshByID('Exc3').picked == false) {
                         if (pickResult.pickedMesh.picked == false) {
@@ -444,7 +448,7 @@
                             var [u, v] = scene.getMeshByID('Exc1').hex
                             for (var q = -1; q < 2; q++) {
                                 for (var r = -1; r < 2; r++) {
-                                    if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][50 + v + r] != 0) {
+                                    if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][shift + v + r] != 0) {
                                         scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
                                         scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = true
                                     }
@@ -456,7 +460,7 @@
                             var [u, v] = scene.getMeshByID('Exc1').hex
                             for (var q = -1; q < 2; q++) {
                                 for (var r = -1; r < 2; r++) {
-                                    if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][50 + v + r] != 0) {
+                                    if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][shift + v + r] != 0) {
                                         scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
                                         scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = false
                                     }
@@ -476,7 +480,7 @@
                             var [u, v] = scene.getMeshByID('Exc2').hex
                             for (var q = -1; q < 2; q++) {
                                 for (var r = -1; r < 2; r++) {
-                                    if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][50 + v + r] != 0) {
+                                    if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][shift + v + r] != 0) {
                                         scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
                                         scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = true
                                     }
@@ -488,7 +492,7 @@
                             var [u, v] = scene.getMeshByID('Exc2').hex
                             for (var q = -1; q < 2; q++) {
                                 for (var r = -1; r < 2; r++) {
-                                    if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][50 + v + r] != 0) {
+                                    if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][shift + v + r] != 0) {
                                         scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
                                         scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = false
                                     }
@@ -509,7 +513,7 @@
                             var [u, v] = scene.getMeshByID('Exc3').hex
                             for (var q = -1; q < 2; q++) {
                                 for (var r = -1; r < 2; r++) {
-                                    if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][50 + v + r] != 0) {
+                                    if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][shift + v + r] != 0) {
                                         scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
                                         scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = true
                                     }
@@ -521,7 +525,7 @@
                             var [u, v] = scene.getMeshByID('Exc3').hex
                             for (var q = -1; q < 2; q++) {
                                 for (var r = -1; r < 2; r++) {
-                                    if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][50 + v + r] != 0) {
+                                    if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][shift + v + r] != 0) {
                                         scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
                                         scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = false
                                     }
@@ -540,12 +544,13 @@
                                 var [u, v] = scene.getMeshByID('Exc' + i).hex
                                 for (var q = -1; q < 2; q++) {
                                     for (var r = -1; r < 2; r++) {
-                                        if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][50 + v + r] != 0) {
+                                        if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][shift + v + r] != 0) {
                                             scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
                                             scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = false
                                         }
                                     }
                                 }
+                                map[u+50][v+shift] = 1
                                 scene.getMeshByID('Exc' + i).hex = pickResult.pickedMesh.hex
                                 var [m, n] = HexesToCord(scene.getMeshByID('Exc' + i).hex[0], scene.getMeshByID('Exc' + i).hex[1])
                                 scene.getMeshByID('Exc' + i).position.x = m + scene.getMeshByID('Exc' + i).offsetX
@@ -553,14 +558,16 @@
                                 scene.getMeshByID('Exc' + i).position.y = 0 + scene.getMeshByID('Exc' + i).offsetZ
 
                                 var [u, v] = scene.getMeshByID('Exc'+i).hex
+                                map[u+50][v+shift] = 2
                                 for (var q = -1; q < 2; q++) {
                                     for (var r = -1; r < 2; r++) {
-                                        if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][50 + v + r] != 0) {
+                                        if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][shift + v + r] != 0) {
                                             scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
                                             scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = true
                                         }
                                     }
                                 }
+                                console.log(map)
                             }
                         }
                     }
