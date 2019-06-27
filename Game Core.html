@@ -6,7 +6,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Babylon Template</title>
+    <title>Hexagon Wars: Battle w/ the Elements</title>
 
     <style>
         html,
@@ -75,37 +75,71 @@
             return isit
         }
 
-        function translation(i) {
+        function translation(i, g, mapVector) {
             dir = [0, 0]
-            r = Math.random()
-
-            if (r < 0.21) {
-                if (i == 0) { dir = [0, 1] }
-                if (i == 1) { dir = [1, -1] }
-                if (i == 2) { dir = [1, -1] }
-                if (i == 3) { dir = [0, 1] }
-            } else if (r < 0.43) {
-                if (i == 0) { dir = [0, 1] }
-                if (i == 1) { dir = [1, 0] }
-                if (i == 2) { dir = [-1, 0] }
-                if (i == 3) { dir = [-1, 0] }
-            } else if (r <0.7) {
-                if (i == 0) { dir = [1, 0] }
-                if (i == 1) { dir = [0, -1] }
-                if (i == 2) { dir = [0, -1] }
-                if (i == 3) { dir = [-1, 1] }
-            } else if (r < 0.87) {
-                if (i == 0) { dir = [-1, 1] }
-                if (i == 1) { dir = [0, 1] }
-                if (i == 2) { dir = [0, -1]}
-                if (i == 3) { dir = [0, 1]}
-            } else {
-                if (i == 0) { dir = [0, -1] }
-                if (i == 1) { dir = [-1, 0]}
-                if (i == 2) { dir = [0, 1]}
-                if (i == 3) { dir = [1, 0]}
+            for (var k = 0; k < 4; k++) {
+                try { throw k }
+                catch (j) {
+                    if (j != i) {
+                        var tdir = [scene.getMeshByID("Exc" + i).hex[0] - scene.getMeshByID("Exc" + j).hex[0], scene.getMeshByID("Exc" + i).hex[1] - scene.getMeshByID("Exc" + j).hex[1]]
+                        var dist = (tdir[0] * tdir[0] + tdir[1] * tdir[1])
+                        dir[0] += tdir[0] * (1 / dist)
+                        dir[1] += tdir[1] * (1 / dist)
+                    }
+                }
             }
-            return dir
+            var pox = 0
+            var poy = 0
+            if (dir[0] != 0) {
+                pox = Math.round(dir[0] / Math.sqrt(dir[0] * dir[0]))
+            }
+            if (dir[1] != 0) {
+                poy = Math.round(dir[1] / Math.sqrt(dir[1] * dir[1]))
+            }
+            var t = Math.random
+            var mp = mapVector
+            if (t < 0.2) { mp[0] = 0 }
+            else if (t < 0.4) { mp[1] = 0 }
+            else if (t < 0.6) { mp = [0, 0] }
+            else {
+                mp[0] = Math.round(mp[0] / 300)
+                mp[1] = Math.round(mp[1] / 300)
+            }
+
+            var r = Math.random
+            if (r < 0.16) {
+                if ([pox, poy] == [0, 1]) { [pox, poy] = [g + mp[0], 0 + mp[1]] }
+                if ([pox, poy] == [1, 0]) { [pox, poy] = [0 + mp[0], g + mp[1]] }
+                if ([pox, poy] == [-1, 1]) { [pox, poy] = [0 + mp[0], g + mp[1]] }
+                if ([pox, poy] == [1, -1]) { [pox, poy] = [0 + mp[0], -g + mp[1]] }
+                if ([pox, poy] == [0, -1]) { [pox, poy] = [-g + mp[0], 0 + mp[1]] }
+                if ([pox, poy] == [-1, 0]) { [pox, poy] = [-g + mp[0], g + mp[1]] }
+            } else if (r < 0.32) {
+                if ([pox, poy] == [0, 1]) { [pox, poy] = [-g + mp[0], g + mp[1]] }
+                if ([pox, poy] == [1, 0]) { [pox, poy] = [g + mp[0], -g + mp[1]] }
+                if ([pox, poy] == [-1, 1]) { [pox, poy] = [-g + mp[0], 0 + mp[1]] }
+                if ([pox, poy] == [1, -1]) { [pox, poy] = [g + mp[0], 0 + mp[1]] }
+                if ([pox, poy] == [0, -1]) { [pox, poy] = [g + mp[0], -g + mp[1]] }
+                if ([pox, poy] == [-1, 0]) { [pox, poy] = [0 + mp[0], -g + mp[1]] }
+            } else if (r < 0.48) {
+                if ([pox, poy] == [0, 1]) { [pox, poy] = [g + mp[0], -g + mp[1]] }
+                if ([pox, poy] == [1, 0]) { [pox, poy] = [0 + mp[0], -g + mp[1]] }
+                if ([pox, poy] == [-1, 1]) { [pox, poy] = [0 + mp[0], -g + mp[1]] }
+                if ([pox, poy] == [1, -1]) { [pox, poy] = [-g + mp[0], 0 + mp[1]] }
+                if ([pox, poy] == [0, -1]) { [pox, poy] = [0 + mp[0], g + mp[1]] }
+                if ([pox, poy] == [-1, 0]) { [pox, poy] = [0 + mp[0], g + mp[1]] }
+            } else if (r < 0.64) {
+                if ([pox, poy] == [0, 1]) { [pox, poy] = [-g + mp[0], 0 + mp[1]] }
+                if ([pox, poy] == [1, 0]) { [pox, poy] = [-g + mp[0], g + mp[1]] }
+                if ([pox, poy] == [-1, 1]) { [pox, poy] = [g + mp[0], 0 + mp[1]] }
+                if ([pox, poy] == [1, -1]) { [pox, poy] = [0 + mp[0], g + mp[1]] }
+                if ([pox, poy] == [0, -1]) { [pox, poy] = [-g + mp[0], g + mp[1]] }
+                if ([pox, poy] == [-1, 0]) { [pox, poy] = [g + mp[0], -g + mp[1]] }
+            }else {
+                pox = pox * (g + mp[0])
+                poy = poy * (g + mp[1])
+            }
+            return [pox, poy]
         }
 
         var value = 0; // by default
@@ -114,6 +148,7 @@
         var disk = []
         var diskNum = 0
         var resetted = false
+        var mapVector = [0, 0]
         const shift = 50
 
         const ExcMove = 2
@@ -243,6 +278,8 @@
                                 for (var r = -1; r < 2; r++) {
                                     if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + a + q][shift + b + r] == 0) {
                                         map[50 + a + q][shift + b + r] = 1
+                                        mapVector[0] += Math.sqrt((a + q) * (a + q))
+                                        mapVector[1] += Math.sqrt((b + r) * (b + r))
                                     }
                                 }
                             }
@@ -288,11 +325,17 @@
                                 for (var r = -1; r < 2; r++) {
                                     if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + a + q][shift + b + r] == 0) {
                                         map[50 + a + q][shift + b + r] = 1
+                                        mapVector[0] += Math.sqrt((a + q) * (a + q))
+                                        mapVector[1] += Math.sqrt((b + r) * (b + r))
                                     }
                                 }
                             }
 
-                            if (map[50 + a + 1][shift + b + 1] == 0) { map[50 + a + 1][shift + b + 1] = 1 }
+                            if (map[50 + a + 1][shift + b + 1] == 0) {
+                                map[50 + a + 1][shift + b + 1] = 1
+                                mapVector[0] += Math.sqrt((a + 1) * (a + 1))
+                                mapVector[1] += Math.sqrt((b + 1) * (b + 1))
+                            }
                         });
                     Bqnum += 1
                     numqmap += 1
@@ -337,15 +380,41 @@
                                 for (var r = -1; r < 2; r++) {
                                     if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + a + q][shift + b + r] == 0) {
                                         map[50 + a + q][shift + b + r] = 1
+                                        mapVector[0] += Math.sqrt((a + q) * (a + q))
+                                        mapVector[1] += Math.sqrt((b + r) * (b + r))
                                     }
                                 }
                             }
-                            if (map[50 + a + 1][shift + b + 1] == 0) { map[50 + a + 1][shift + b + 1] = 1 }
-                            if (map[50 + a + 1][shift + b - 2] == 0) { map[50 + a + 1][shift + b - 2] = 1 }
-                            if (map[50 + a - 1][shift + b + 2] == 0) { map[50 + a - 1][shift + b + 2] = 1 }
-                            if (map[50 + a - 2][shift + b + 1] == 0) { map[50 + a - 2][shift + b + 1] = 1 }
-                            if (map[50 + a + 2][shift + b - 1] == 0) { map[50 + a + 2][shift + b - 1] = 1 }
-                            if (map[50 + a - 1][shift + b - 1] == 0) { map[50 + a - 1][shift + b - 1] = 1 }
+                            if (map[50 + a + 1][shift + b + 1] == 0) {
+                                map[50 + a + 1][shift + b + 1] = 1
+                                mapVector[0] += Math.sqrt((a + 1) * (a + 1))
+                                mapVector[1] += Math.sqrt((b + 1) * (b + 1))
+                            }
+                            if (map[50 + a + 1][shift + b - 2] == 0) {
+                                map[50 + a + 1][shift + b - 2] = 1
+                                mapVector[0] += Math.sqrt((a + 1) * (a + 1))
+                                mapVector[1] += Math.sqrt((b - 1) * (b - 1))
+                            }
+                            if (map[50 + a - 1][shift + b + 2] == 0) {
+                                map[50 + a - 1][shift + b + 2] = 1
+                                mapVector[0] += Math.sqrt((a - 1) * (a - 1))
+                                mapVector[1] += Math.sqrt((b + 2) * (b + 2))
+                            }
+                            if (map[50 + a - 2][shift + b + 1] == 0) {
+                                map[50 + a - 2][shift + b + 1] = 1
+                                mapVector[0] += Math.sqrt((a - 2) * (a - 2))
+                                mapVector[1] += Math.sqrt((b + 1) * (b + 1))
+                            }
+                            if (map[50 + a + 2][shift + b - 1] == 0) {
+                                map[50 + a + 2][shift + b - 1] = 1
+                                mapVector[0] += Math.sqrt((a + 2) * (a + 2))
+                                mapVector[1] += Math.sqrt((b - 1) * (b - 1))
+                            }
+                            if (map[50 + a - 1][shift + b - 1] == 0) {
+                                map[50 + a - 1][shift + b - 1] = 1
+                                mapVector[0] += Math.sqrt((a - 1) * (a - 1))
+                                mapVector[1] += Math.sqrt((b - 1) * (b - 1))
+                            }
                         });
                     Cqnum += 1
                     numqmap += 1
@@ -419,6 +488,7 @@
 
 
             scene.onPointerDown = function (evt, pickResult) {
+
                 if (resetted == false) {
                     var hexes = []
                     var upper = 0
@@ -446,27 +516,36 @@
                         scene.getMeshByID('' + (hexes[i][0] - 50) + '00' + (hexes[i][1] - shift)).hex = [hexes[i][0] - 50, hexes[i][1] - shift]
                         diskNum += 1
                     }
-                    for (var w = 0; w<2000; w++) {
-                    for(var i = 0; i < 4; i++) {
-                        try {throw i}
-                        catch (j) {
-                            gett = translation(j)
-                            var [a, b] = scene.getMeshByID("Exc"+j).hex
-                            if (map[50+a+gett[0]][shift+b+gett[1]] 
-                            != 0){
-                                map[50+a][shift+b] = 1
-                                map[50+a+gett[0]][shift+b+gett[1]] = 2
-                                var [x, y] = HexesToCord(a+gett[0], b+gett[1])
-                                scene.getMeshByID("Exc"+j).hex = [a+gett[0], b+gett[1]]
-                                scene.getMeshByID("Exc"+j).position.x = x + scene.getMeshByID("Exc"+j).offsetX
-                                scene.getMeshByID("Exc"+j).position.z = y + scene.getMeshByID("Exc"+j).offsetY
+                    for (var f = 0; f < 30; f++) {
+                        for (var w = 0; w < 5; w++) {
+                            try { throw w }
+                            catch (m) {
+                                for (var i = 0; i < 4; i++) {
+                                    try { throw i }
+                                    catch (j) {
+                                        var g = m
+                                        gett = translation(j, 5 - g, mapVector)
+                                        var [a, b] = scene.getMeshByID("Exc" + j).hex
+                                        if (((50 + a + gett[0]) < 100 && (shift + b + gett[1]) < 100)
+                                            && ((50 + a + gett[0]) > 0 && (shift + b + gett[1]) > 0)
+                                            && map[50 + a + gett[0]][shift + b + gett[1]] != 0) {
+                                            map[50 + a][shift + b] = 1
+                                            map[50 + a + gett[0]][shift + b + gett[1]] = 2
+                                            var [x, y] = HexesToCord(a + gett[0], b + gett[1])
+                                            scene.getMeshByID("Exc" + j).hex = [a + gett[0], b + gett[1]]
+                                            scene.getMeshByID("Exc" + j).position.x = x + scene.getMeshByID("Exc" + j).offsetX
+                                            scene.getMeshByID("Exc" + j).position.z = y + scene.getMeshByID("Exc" + j).offsetY
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
-                    } console.log(map)
-
                     resetted = true
                 }
+
+                
+
                 //check if any dudes picked
                 var checker = false
                 for (var o = 0; o < 4; o++) {
@@ -489,6 +568,8 @@
 
                 // if the click hits the ground object, we change the impact position
                 if (pickResult.hit) {
+
+
                     for (var j = 0; j < 4; j++) {
                         try { throw j }
                         catch (i) {
@@ -597,8 +678,8 @@
                         try { throw l }
                         catch (p) {
                             var angle = camera.alpha - scene.getMeshByID('' + p).rotval
-                            scene.getMeshByID('' + p).rotval += angle/10
-                            scene.getMeshByID('' + p).rotate(BABYLON.Axis.Z, angle/10)
+                            scene.getMeshByID('' + p).rotval += angle / 12
+                            scene.getMeshByID('' + p).rotate(BABYLON.Axis.Z, angle / 12)
                         }
                     }
                 }
