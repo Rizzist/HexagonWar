@@ -149,7 +149,7 @@
         var diskNum = 0
         var resetted = false
         var mapVector = [0, 0]
-        const shift = 50
+        const shift = 15
 
         const ExcMove = 2
         const SoldierMove = 3
@@ -161,7 +161,7 @@
 
             var camera = new BABYLON.ArcRotateCamera("Camera", 0, 0, 0, new BABYLON.Vector3(0, 0, 0), scene);
             camera.setPosition(new BABYLON.Vector3(0, 20, 50));
-            camera.upperBetaLimit = (Math.PI / 2) * 0.9;
+            camera.upperBetaLimit = (Math.PI / 2) * 0.94;
             camera.lowerRadiusLimit = 10;
             camera.upperRadiusLimit = 100;
             camera.attachControl(canvas, true);
@@ -182,6 +182,8 @@
             const Players = 4
             var Pnum = 0
             var countNums = 0
+            var soldierCount = 0
+            var archerCount = 0
             //load numbers
             if (loading == false) {
                 for (var i = 0; i < 10; i++) {
@@ -542,154 +544,214 @@
                         }
                     }
 
-                    BABYLON.SceneLoader.ImportMesh(
-                        null,
-                        "https://raw.githubusercontent.com/Rizzist/HexagonWar/master/",
-                        "Soldier.obj",
-                        scene,
-                        function (Soldier) {
-                            var mesh = Soldier[0];
-                            mesh.isVisible = false;
-                            var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
-                            myMaterial.diffuseColor = new BABYLON.Color3(1, 0.65, 0)
+                    for (var i = 0; i < 4; i++) {
+                        try { throw i }
+                        catch (j) {
+                            BABYLON.SceneLoader.ImportMesh(
+                                null,
+                                "https://raw.githubusercontent.com/Rizzist/HexagonWar/master/",
+                                "Soldier.obj",
+                                scene,
+                                function (Soldier) {
+                                    var mesh = Soldier[0];
+                                    mesh.isVisible = false;
+                                    var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
+                                    myMaterial.diffuseColor = new BABYLON.Color3(1, 0.65, 0)
 
-                            mesh.material = myMaterial
-                            var j = 0
-                            var newInstance = mesh.createInstance("Soldier" + j);
-                            [x, y] = HexesToCord(999, 999)
-                            newInstance.hex = [999, 999]
-                            if (j == 0) {
-                                [x, y] = HexesToCord(0, 0)
-                                newInstance.hex = [0, 0]
-                                map[50][shift] = 3
-                            }
-                            if (j == 1) {
-                                [x, y] = HexesToCord(1, 0)
-                                newInstance.hex = [1, 0]
-                                map[51][shift] = 3
-                            }
-                            if (j == 2) {
-                                [x, y] = HexesToCord(0, -1)
-                                newInstance.hex = [0, -1]
-                                map[50][shift - 1] = 3
-                            }
-                            if (j == 3) {
-                                [x, y] = HexesToCord(0, 1)
-                                newInstance.hex = [0, 1]
-                                map[50][shift + 1] = 3
-                            }
-                            newInstance.offsetX = -2.54 * 8
-                            newInstance.offsetY = -2.54 * 0.85
-                            newInstance.offsetZ = 2.54 * 0.278
-                            newInstance.move = SoldierMove
+                                    mesh.material = myMaterial
+                                    var newInstance = mesh.createInstance("Soldier" + j);
+                                    var [a, b] = scene.getMeshByID("Exc" + j).hex
+                                    var [q, r] = [999, 999]
+                                    var placed = false
+                                    var ssq = 1
+                                    var rsq = Math.random
+                                    if (rsq < 0.5) {
+                                        ssq = -1
+                                    }
 
-                            newInstance.position.x = x + newInstance.offsetX
-                            newInstance.position.z = y + newInstance.offsetY
-                            newInstance.position.y = newInstance.offsetZ
-                            newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
-                            newInstance.picked = false
-                            newInstance.isDisk = false
+                                    var ssr = 1
+                                    var rsr = Math.random
+                                    if (rsr > 0.5) {
+                                        ssr = -1
+                                    }
+                                    for (var sq = -1; sq < 2; sq++) {
+                                        for (var sr = -1; sr < 2; sr++) {
+                                            try { throw sq }
+                                            catch (sq) {
+                                                try { throw sr }
+                                                catch (sr) {
+                                                    if (((sq * ssq != 1 && sr * ssr != -1) || (sq * ssq != -1 && sr * ssr != 1)) &&
+                                                        map[50 + a + sq * ssq][shift + b + sr * ssr] == 1 && placed == false) {
+                                                        var [q, r] = [sq * ssq, sr * ssr]
+                                                        map[50 + a + q][shift + b + r] = 3
+                                                        placed = true
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    var [x, y] = HexesToCord(a + q, b + r)
+                                    newInstance.hex = [a + q, b + r]
+                                    newInstance.offsetX = -2.54 * 8
+                                    newInstance.offsetY = -2.54 * 0.85
+                                    newInstance.offsetZ = 2.54 * 0.278
+                                    newInstance.move = SoldierMove
+
+                                    newInstance.position.x = x + newInstance.offsetX
+                                    newInstance.position.z = y + newInstance.offsetY
+                                    newInstance.position.y = newInstance.offsetZ
+                                    newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
+                                    newInstance.picked = false
+                                    newInstance.isDisk = false
+                                    soldierCount += 1
+                                    BABYLON.SceneLoader.ImportMesh(
+                                        null,
+                                        "https://raw.githubusercontent.com/Rizzist/HexagonWar/master/",
+                                        "Plate.obj",
+                                        scene,
+                                        function (Plate) {
+                                            var mesh = Plate[0];
+                                            mesh.isVisible = false;
+                                            var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
+
+                                            var [r, g, b] = [0, 0, 0]
+
+                                            if (j == 0) {
+                                                [r, g, b] = [1, 0, 0]
+                                            }
+                                            if (j == 1) {
+                                                [r, g, b] = [1, 1, 0]
+                                            }
+                                            if (j == 2) {
+                                                [r, g, b] = [0, 0, 1]
+                                            }
+                                            if (j == 3) {
+                                                [r, g, b] = [0, 1, 0]
+                                            }
+
+                                            myMaterial.diffuseColor = new BABYLON.Color3(r, g, b)
+                                            mesh.material = myMaterial
+                                            var newInstance2 = mesh.createInstance("SPlate" + j);
+                                            newInstance2.hex = [999, 999]
+
+                                            newInstance2.offsetX = 0
+                                            newInstance2.offsetY = 0
+                                            newInstance2.offsetZ = 0
+                                            newInstance2.move = 0
+                                            newInstance2.position.x = newInstance.position.x
+                                            newInstance2.position.z = newInstance.position.z
+                                            newInstance2.position.y = newInstance.position.y
+                                            newInstance2.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
+                                            newInstance2.picked = false
+                                            newInstance2.isDisk = false
+                                        });
+                                });
 
                             BABYLON.SceneLoader.ImportMesh(
                                 null,
                                 "https://raw.githubusercontent.com/Rizzist/HexagonWar/master/",
-                                "Plate.obj",
+                                "Archer.obj",
                                 scene,
-                                function (Plate) {
-                                    var mesh = Plate[0];
+                                function (Archer) {
+                                    var mesh = Archer[0];
                                     mesh.isVisible = false;
                                     var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
-                                    myMaterial.diffuseColor = new BABYLON.Color3(1, 0, 0)
+                                    myMaterial.diffuseColor = new BABYLON.Color3(1, 0.65, 0)
 
                                     mesh.material = myMaterial
-                                    var j = 0
-                                    var newInstance2 = mesh.createInstance("Plate" + j);
-                                    [x, y] = HexesToCord(999, 999)
-                                    newInstance2.hex = [999, 999]
-                                    if (j == 0) {
-                                        [x, y] = HexesToCord(0, 0)
-                                        newInstance2.hex = [0, 0]
+                                    var newInstance = mesh.createInstance("Archer" + j);
+                                    var [a, b] = scene.getMeshByID("Exc" + j).hex
+                                    var [q, r] = [999, 999]
+                                    var placed = false
+                                    var ssq = -1
+                                    var rsq = Math.random
+                                    if (rsq < 0.5) {
+                                        ssq = 1
                                     }
-                                    if (j == 1) {
-                                        [x, y] = HexesToCord(1, 0)
-                                        newInstance2.hex = [1, 0]
-                                    }
-                                    if (j == 2) {
-                                        [x, y] = HexesToCord(0, -1)
-                                        newInstance2.hex = [0, -1]
-                                    }
-                                    if (j == 3) {
-                                        [x, y] = HexesToCord(0, 1)
-                                        newInstance2.hex = [0, 1]
-                                    }
-                                    newInstance2.offsetX = -2.54 * 8
-                                    newInstance2.offsetY = -2.54 * 0.85
-                                    newInstance2.offsetZ = 2.54 * 0.278
-                                    newInstance2.move = 0
 
-                                    newInstance2.position.x = x + newInstance2.offsetX
-                                    newInstance2.position.z = y + newInstance2.offsetY
-                                    newInstance2.position.y = newInstance2.offsetZ
-                                    newInstance2.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
-                                    newInstance2.picked = false
-                                    newInstance2.isDisk = false
+                                    var ssr = 1
+                                    var rsr = Math.random
+                                    if (rsr > 0.5) {
+                                        ssr = 1
+                                    }
+                                    for (var sq = -1; sq < 2; sq++) {
+                                        for (var sr = -1; sr < 2; sr++) {
+                                            try { throw sq }
+                                            catch (sq) {
+                                                try { throw sr }
+                                                catch (sr) {
+                                                    if (((sq * ssq != 1 && sr * ssr != -1) || (sq * ssq != -1 && sr * ssr != 1)) &&
+                                                        map[50 + a + sq * ssq][shift + b + sr * ssr] == 1 && placed == false) {
+                                                        var [q, r] = [sq * ssq, sr * ssr]
+                                                        map[50 + a + q][shift + b + r] = 4
+                                                        placed = true
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    var [x, y] = HexesToCord(a + q, b + r)
+                                    newInstance.hex = [a + q, b + r]
+                                    newInstance.offsetX = -2.54 * 9.79
+                                    newInstance.offsetY = -2.54 * 0.85
+                                    newInstance.offsetZ = 2.54 * 0.278
+                                    newInstance.move = ArcherMove
+
+                                    newInstance.position.x = x + newInstance.offsetX
+                                    newInstance.position.z = y + newInstance.offsetY
+                                    newInstance.position.y = newInstance.offsetZ
+                                    newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
+                                    newInstance.picked = false
+                                    newInstance.isDisk = false
+                                    archerCount += 1
+                                    BABYLON.SceneLoader.ImportMesh(
+                                        null,
+                                        "https://raw.githubusercontent.com/Rizzist/HexagonWar/master/",
+                                        "Plate.obj",
+                                        scene,
+                                        function (Plate) {
+                                            var mesh = Plate[0];
+                                            mesh.isVisible = false;
+                                            var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
+
+                                            var [r, g, b] = [0, 0, 0]
+
+                                            if (j == 0) {
+                                                [r, g, b] = [1, 0, 0]
+                                            }
+                                            if (j == 1) {
+                                                [r, g, b] = [1, 1, 0]
+                                            }
+                                            if (j == 2) {
+                                                [r, g, b] = [0, 0, 1]
+                                            }
+                                            if (j == 3) {
+                                                [r, g, b] = [0, 1, 0]
+                                            }
+
+                                            myMaterial.diffuseColor = new BABYLON.Color3(r, g, b)
+                                            mesh.material = myMaterial
+                                            var newInstance2 = mesh.createInstance("APlate" + j);
+                                            newInstance2.hex = [999, 999]
+
+                                            newInstance2.offsetX = 2.54 * 1.77
+                                            newInstance2.offsetY = 0
+                                            newInstance2.offsetZ = 0
+                                            newInstance2.move = 0
+                                            newInstance2.position.x = newInstance.position.x + newInstance2.offsetX
+                                            newInstance2.position.z = newInstance.position.z + newInstance2.offsetY
+                                            newInstance2.position.y = newInstance.position.y
+                                            newInstance2.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
+                                            newInstance2.picked = false
+                                            newInstance2.isDisk = false
+                                        });
                                 });
-                        });
 
-
-                    BABYLON.SceneLoader.ImportMesh(
-                        null,
-                        "https://raw.githubusercontent.com/Rizzist/HexagonWar/master/",
-                        "Archer.obj",
-                        scene,
-                        function (Archer) {
-                            var mesh = Archer[0];
-                            mesh.isVisible = false;
-                            var myMaterial = new BABYLON.StandardMaterial("myMaterial", scene);
-                            myMaterial.diffuseColor = new BABYLON.Color3(1, 0.65, 0)
-
-                            mesh.material = myMaterial
-                            var j = 0
-                            var newInstance = mesh.createInstance("Archer" + j);
-                            [x, y] = HexesToCord(999, 999)
-                            newInstance.hex = [999, 999]
-                            if (j == 0) {
-                                [x, y] = HexesToCord(1, -1)
-                                newInstance.hex = [-1, 1]
-                                map[50][shift] = 4
-                            }
-                            if (j == 1) {
-                                [x, y] = HexesToCord(1, 0)
-                                newInstance.hex = [1, 0]
-                                map[51][shift] = 4
-                            }
-                            if (j == 2) {
-                                [x, y] = HexesToCord(0, -1)
-                                newInstance.hex = [0, -1]
-                                map[50][shift - 1] = 4
-                            }
-                            if (j == 3) {
-                                [x, y] = HexesToCord(0, 1)
-                                newInstance.hex = [0, 1]
-                                map[50][shift + 1] = 4
-                            }
-                            newInstance.offsetX = -2.54 * 9.79
-                            newInstance.offsetY = -2.54 * 0.85
-                            newInstance.offsetZ = 2.54 * 0.278
-                            newInstance.move = SoldierMove
-
-                            newInstance.position.x = x + newInstance.offsetX
-                            newInstance.position.z = y + newInstance.offsetY
-                            newInstance.position.y = newInstance.offsetZ
-                            newInstance.rotate(BABYLON.Axis.X, -Math.PI / 2, BABYLON.Space.WORLD);
-                            newInstance.picked = false
-                            newInstance.isDisk = false
-                        });
-
+                        }
+                    }
 
                     resetted = true
                 }
-
 
 
                 //check if any dudes picked
@@ -714,8 +776,6 @@
 
                 // if the click hits the ground object, we change the impact position
                 if (pickResult.hit) {
-
-
                     for (var j = 0; j < 4; j++) {
                         try { throw j }
                         catch (i) {
@@ -768,6 +828,55 @@
                             }
                         }
                     }
+
+                    for (var j = 0; j < soldierCount; j++) {
+                        try { throw j }
+                        catch (i) {
+                            if (pickResult.pickedMesh.id == ("Soldier" + i)) {
+                                if (pickResult.pickedMesh.picked == false) {
+                                    scene.getMeshByID('Soldier' + i).material.diffuseColor = new BABYLON.Color3(0.8, 0.4, 0.9)
+                                    scene.getMeshByID('Soldier' + i).picked = true
+                                    if (scene.getMeshByID('Soldier' + i).move > 0) {
+                                        var [u, v] = scene.getMeshByID('Soldier' + i).hex
+                                        for (var q = -1; q < 2; q++) {
+                                            for (var r = -1; r < 2; r++) {
+                                                if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][shift + v + r] == 1) {
+                                                    scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
+                                                    scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = true
+                                                }
+                                            }
+                                        }
+                                    }
+                                    [x, y] = HexesToCord(scene.getMeshByID('Soldier' + i).hex[0], scene.getMeshByID('Soldier' + i).hex[1])
+                                    scene.getMeshByID('' + scene.getMeshByID('Soldier' + i).move).isVisible = true
+                                    scene.getMeshByID('' + scene.getMeshByID('Soldier' + i).move).hex = scene.getMeshByID('Soldier' + i).hex
+                                    scene.getMeshByID('' + scene.getMeshByID('Soldier' + i).move).position.x = x + scene.getMeshByID('' + scene.getMeshByID('Soldier' + i).move).offsetX
+                                    scene.getMeshByID('' + scene.getMeshByID('Soldier' + i).move).position.z = y + scene.getMeshByID('' + scene.getMeshByID('Soldier' + i).move).offsetY
+                                } else {
+                                    var materials = new BABYLON.Color3(1, 0.65, 0)
+                                    scene.getMeshByID('Soldier' + i).material.diffuseColor = materials
+                                    scene.getMeshByID('Soldier' + i).picked = false
+                                    var [u, v] = scene.getMeshByID('Soldier' + i).hex
+                                    for (var q = -1; q < 2; q++) {
+                                        for (var r = -1; r < 2; r++) {
+                                            if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][shift + v + r] == 1) {
+                                                scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
+                                                scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = false
+                                            }
+                                        }
+                                    }
+                                    for (var l = 0; l < 10; l++) {
+                                        try { throw l }
+                                        catch (p) {
+                                            scene.getMeshByID('' + p).isVisible = false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
                     if (pickResult.pickedMesh.isDisk == true) {
                         for (i = 0; i < 4; i++) {
                             if (scene.getMeshByID('Exc' + i).picked == true && scene.getMeshByID('Exc' + i).move > 0) {
@@ -815,6 +924,60 @@
                                 }
                             }
                         }
+
+                        for (var j = 0; j < soldierCount; j++) {
+                            try { throw j }
+                            catch (i) {
+                                if (scene.getMeshByID('Soldier' + i).picked == true && scene.getMeshByID('Soldier' + i).move > 0) {
+                                    var [u, v] = scene.getMeshByID('Soldier' + i).hex
+                                    for (var q = -1; q < 2; q++) {
+                                        for (var r = -1; r < 2; r++) {
+                                            if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][shift + v + r] == 1) {
+                                                scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
+                                                scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = false
+                                            }
+                                        }
+                                    }
+                                    map[u + 50][v + shift] = 1
+                                    scene.getMeshByID('Soldier' + i).move -= 1
+                                    scene.getMeshByID('Soldier' + i).hex = pickResult.pickedMesh.hex
+                                    var [m, n] = HexesToCord(scene.getMeshByID('Soldier' + i).hex[0], scene.getMeshByID('Soldier' + i).hex[1])
+                                    scene.getMeshByID('Soldier' + i).position.x = m + scene.getMeshByID('Soldier' + i).offsetX
+                                    scene.getMeshByID('Soldier' + i).position.z = n + scene.getMeshByID('Soldier' + i).offsetY
+                                    scene.getMeshByID('Soldier' + i).position.y = 0 + scene.getMeshByID('Soldier' + i).offsetZ
+
+                                    for (var l = 0; l < 10; l++) {
+                                        try { throw l }
+                                        catch (p) {
+                                            scene.getMeshByID('' + p).isVisible = false
+                                        }
+                                    }
+
+                                    [x, y] = HexesToCord(scene.getMeshByID('Soldier' + i).hex[0], scene.getMeshByID('Soldier' + i).hex[1])
+                                    scene.getMeshByID('' + scene.getMeshByID('Soldier' + i).move).isVisible = true
+                                    scene.getMeshByID('' + scene.getMeshByID('Soldier' + i).move).hex = scene.getMeshByID('Soldier' + i).hex
+                                    scene.getMeshByID('' + scene.getMeshByID('Soldier' + i).move).position.x = x + scene.getMeshByID('' + scene.getMeshByID('Soldier' + i).move).offsetX
+                                    scene.getMeshByID('' + scene.getMeshByID('Soldier' + i).move).position.z = y + scene.getMeshByID('' + scene.getMeshByID('Soldier' + i).move).offsetY
+                                    scene.getMeshByID('' + scene.getMeshByID('SPlate' + i).move).position.x = x + scene.getMeshByID('' + scene.getMeshByID('Soldier' + i).move).offsetX
+                                    scene.getMeshByID('' + scene.getMeshByID('SPlate' + i).move).position.z = y + scene.getMeshByID('' + scene.getMeshByID('Soldier' + i).move).offsetY
+                                    var [u, v] = scene.getMeshByID('Soldier' + i).hex
+
+                                    map[u + 50][v + shift] = 2
+
+                                    if (scene.getMeshByID('Soldier' + i).move > 0) {
+                                        for (var q = -1; q < 2; q++) {
+                                            for (var r = -1; r < 2; r++) {
+                                                if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][shift + v + r] == 1) {
+                                                    scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
+                                                    scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = true
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
                     }
                 }
             };
