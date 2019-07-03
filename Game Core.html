@@ -142,6 +142,37 @@
             return [pox, poy]
         }
 
+        function othersPicked(picked, soldierCount, archerCount) {
+            var p = false
+            for (var i = 0; i < 4; i++) {
+                try { throw i }
+                catch (j) {
+                    if (scene.getMeshByID("Exc" + j).picked == true && ("Exc" +j) != picked) {
+                        p = true
+                    }
+                }
+            }
+
+            for (var i = 0; i < soldierCount; i++) {
+                try { throw i }
+                catch (j) {
+                    if (scene.getMeshByID("Soldier" + j).picked == true && ("Soldier" +j) != picked) {
+                        p = true
+                    }
+                }
+            }
+
+            for (var i = 0; i < archerCount; i++) {
+                try { throw i }
+                catch (j) {
+                    if (scene.getMeshByID("Archer" + j).picked == true && ("Archer" +j) != picked) {
+                        p = true
+                    }
+                }
+            }
+            return p
+        }
+
         var value = 0; // by default
         var map = [...Array(100)].map(e => Array(100).fill(value));
         //y, x instead of x, y. remember that for map
@@ -149,8 +180,8 @@
         var diskNum = 0
         var resetted = false
         var mapVector = [0, 0]
-        const shift = 15
 
+        const shift = 15
         const ExcMove = 2
         const SoldierMove = 3
         const ArcherMove = 1
@@ -671,8 +702,8 @@
 
                                     var ssr = 1
                                     var rsr = Math.random
-                                    if (rsr > 0.5) {
-                                        ssr = 1
+                                    if (rsr < 0.5) {
+                                        ssr = -1
                                     }
                                     for (var sq = -1; sq < 2; sq++) {
                                         for (var sr = -1; sr < 2; sr++) {
@@ -764,6 +795,22 @@
                         }
                     }
                 }
+                for (var o = 0; o < soldierCount; o++) {
+                    try { throw o }
+                    catch (u) {
+                        if (scene.getMeshByID('Soldier' + u).picked == true) {
+                            checker = true
+                        }
+                    }
+                }
+                for (var o = 0; o < archerCount; o++) {
+                    try { throw o }
+                    catch (u) {
+                        if (scene.getMeshByID('Archer' + u).picked == true) {
+                            checker = true
+                        }
+                    }
+                }
                 if (checker == false) {
                     for (var l = 0; l < 10; l++) {
                         try { throw l }
@@ -779,10 +826,7 @@
                     for (var j = 0; j < 4; j++) {
                         try { throw j }
                         catch (i) {
-                            if (pickResult.pickedMesh.id == ("Exc" + i) && scene.getMeshByID('Exc' + (i - 1)).picked == false
-                                && scene.getMeshByID('Exc' + (i - 2)).picked == false && scene.getMeshByID('Exc' + (i - 3)).picked == false
-                                && scene.getMeshByID('Exc' + (i + 1)).picked == false
-                                && scene.getMeshByID('Exc' + (i + 2)).picked == false && scene.getMeshByID('Exc' + (i + 3)).picked == false) {
+                            if (pickResult.pickedMesh.id == ("Exc" + i) && othersPicked("Exc" + i, soldierCount, archerCount) == false) {
                                 if (pickResult.pickedMesh.picked == false) {
                                     scene.getMeshByID('Exc' + i).material.diffuseColor = new BABYLON.Color3(0.8, 0.4, 0.9)
                                     scene.getMeshByID('Exc' + i).picked = true
@@ -832,7 +876,7 @@
                     for (var j = 0; j < soldierCount; j++) {
                         try { throw j }
                         catch (i) {
-                            if (pickResult.pickedMesh.id == ("Soldier" + i)) {
+                            if (pickResult.pickedMesh.id == ("Soldier" + i) && othersPicked("Soldier" + i, soldierCount, archerCount) == false) {
                                 if (pickResult.pickedMesh.picked == false) {
                                     scene.getMeshByID('Soldier' + i).material.diffuseColor = new BABYLON.Color3(0.8, 0.4, 0.9)
                                     scene.getMeshByID('Soldier' + i).picked = true
@@ -857,6 +901,53 @@
                                     scene.getMeshByID('Soldier' + i).material.diffuseColor = materials
                                     scene.getMeshByID('Soldier' + i).picked = false
                                     var [u, v] = scene.getMeshByID('Soldier' + i).hex
+                                    for (var q = -1; q < 2; q++) {
+                                        for (var r = -1; r < 2; r++) {
+                                            if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][shift + v + r] == 1) {
+                                                scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
+                                                scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = false
+                                            }
+                                        }
+                                    }
+                                    for (var l = 0; l < 10; l++) {
+                                        try { throw l }
+                                        catch (p) {
+                                            scene.getMeshByID('' + p).isVisible = false
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    for (var j = 0; j < archerCount; j++) {
+                        try { throw j }
+                        catch (i) {
+                            if (pickResult.pickedMesh.id == ("Archer" + i) && othersPicked("Archer" + i, soldierCount, archerCount) == false) {
+                                if (pickResult.pickedMesh.picked == false) {
+                                    scene.getMeshByID('Archer' + i).material.diffuseColor = new BABYLON.Color3(0.8, 0.4, 0.9)
+                                    scene.getMeshByID('Archer' + i).picked = true
+                                    if (scene.getMeshByID('Archer' + i).move > 0) {
+                                        var [u, v] = scene.getMeshByID('Archer' + i).hex
+                                        for (var q = -1; q < 2; q++) {
+                                            for (var r = -1; r < 2; r++) {
+                                                if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][shift + v + r] == 1) {
+                                                    scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
+                                                    scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = true
+                                                }
+                                            }
+                                        }
+                                    }
+                                    [x, y] = HexesToCord(scene.getMeshByID('Archer' + i).hex[0], scene.getMeshByID('Archer' + i).hex[1])
+                                    scene.getMeshByID('' + scene.getMeshByID('Archer' + i).move).isVisible = true
+                                    scene.getMeshByID('' + scene.getMeshByID('Archer' + i).move).hex = scene.getMeshByID('Archer' + i).hex
+                                    scene.getMeshByID('' + scene.getMeshByID('Archer' + i).move).position.x = x + scene.getMeshByID('' + scene.getMeshByID('Archer' + i).move).offsetX
+                                    scene.getMeshByID('' + scene.getMeshByID('Archer' + i).move).position.z = y + scene.getMeshByID('' + scene.getMeshByID('Archer' + i).move).offsetY
+                                } else {
+                                    var materials = new BABYLON.Color3(1, 0.65, 0)
+                                    scene.getMeshByID('Archer' + i).material.diffuseColor = materials
+                                    scene.getMeshByID('Archer' + i).picked = false
+                                    var [u, v] = scene.getMeshByID('Archer' + i).hex
                                     for (var q = -1; q < 2; q++) {
                                         for (var r = -1; r < 2; r++) {
                                             if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][shift + v + r] == 1) {
@@ -958,11 +1049,11 @@
                                     scene.getMeshByID('' + scene.getMeshByID('Soldier' + i).move).hex = scene.getMeshByID('Soldier' + i).hex
                                     scene.getMeshByID('' + scene.getMeshByID('Soldier' + i).move).position.x = x + scene.getMeshByID('' + scene.getMeshByID('Soldier' + i).move).offsetX
                                     scene.getMeshByID('' + scene.getMeshByID('Soldier' + i).move).position.z = y + scene.getMeshByID('' + scene.getMeshByID('Soldier' + i).move).offsetY
-                                    scene.getMeshByID('' + scene.getMeshByID('SPlate' + i).move).position.x = x + scene.getMeshByID('' + scene.getMeshByID('Soldier' + i).move).offsetX
-                                    scene.getMeshByID('' + scene.getMeshByID('SPlate' + i).move).position.z = y + scene.getMeshByID('' + scene.getMeshByID('Soldier' + i).move).offsetY
+                                    scene.getMeshByID('SPlate' + i).position.x = x + scene.getMeshByID('Soldier' + i).offsetX
+                                    scene.getMeshByID('SPlate' + i).position.z = y + scene.getMeshByID('Soldier' + i).offsetY
                                     var [u, v] = scene.getMeshByID('Soldier' + i).hex
 
-                                    map[u + 50][v + shift] = 2
+                                    map[u + 50][v + shift] = 3
 
                                     if (scene.getMeshByID('Soldier' + i).move > 0) {
                                         for (var q = -1; q < 2; q++) {
@@ -977,6 +1068,62 @@
                                 }
                             }
                         }
+
+
+                        for (var j = 0; j < archerCount; j++) {
+                            try { throw j }
+                            catch (i) {
+                                if (scene.getMeshByID('Archer' + i).picked == true && scene.getMeshByID('Archer' + i).move > 0) {
+                                    var [u, v] = scene.getMeshByID('Archer' + i).hex
+                                    for (var q = -1; q < 2; q++) {
+                                        for (var r = -1; r < 2; r++) {
+                                            if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][shift + v + r] == 1) {
+                                                scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
+                                                scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = false
+                                            }
+                                        }
+                                    }
+                                    map[u + 50][v + shift] = 1
+                                    scene.getMeshByID('Archer' + i).move -= 1
+                                    scene.getMeshByID('Archer' + i).hex = pickResult.pickedMesh.hex
+                                    var [m, n] = HexesToCord(scene.getMeshByID('Archer' + i).hex[0], scene.getMeshByID('Archer' + i).hex[1])
+                                    scene.getMeshByID('Archer' + i).position.x = m + scene.getMeshByID('Archer' + i).offsetX
+                                    scene.getMeshByID('Archer' + i).position.z = n + scene.getMeshByID('Archer' + i).offsetY
+                                    scene.getMeshByID('Archer' + i).position.y = 0 + scene.getMeshByID('Archer' + i).offsetZ
+
+                                    for (var l = 0; l < 10; l++) {
+                                        try { throw l }
+                                        catch (p) {
+                                            scene.getMeshByID('' + p).isVisible = false
+                                        }
+                                    }
+
+                                    [x, y] = HexesToCord(scene.getMeshByID('Archer' + i).hex[0], scene.getMeshByID('Archer' + i).hex[1])
+                                    scene.getMeshByID('' + scene.getMeshByID('Archer' + i).move).isVisible = true
+                                    scene.getMeshByID('' + scene.getMeshByID('Archer' + i).move).hex = scene.getMeshByID('Archer' + i).hex
+                                    scene.getMeshByID('' + scene.getMeshByID('Archer' + i).move).position.x = x + scene.getMeshByID('' + scene.getMeshByID('Archer' + i).move).offsetX
+                                    scene.getMeshByID('' + scene.getMeshByID('Archer' + i).move).position.z = y + scene.getMeshByID('' + scene.getMeshByID('Archer' + i).move).offsetY
+                                    scene.getMeshByID('APlate' + i).position.x = x + scene.getMeshByID('Archer' + i).offsetX + scene.getMeshByID('APlate' + i).offsetX
+                                    scene.getMeshByID('APlate' + i).position.z = y + scene.getMeshByID('Archer' + i).offsetY
+                                    var [u, v] = scene.getMeshByID('Archer' + i).hex
+
+                                    map[u + 50][v + shift] = 4
+
+                                    if (scene.getMeshByID('Archer' + i).move > 0) {
+                                        for (var q = -1; q < 2; q++) {
+                                            for (var r = -1; r < 2; r++) {
+                                                if (((q != 1 && r != -1) || (q != -1 && r != 1)) && map[50 + u + q][shift + v + r] == 1) {
+                                                    scene.getMeshByID('' + (u + q) + '00' + (v + r)).material.diffuseColor = new BABYLON.Color3(0.9, 1, 0.8)
+                                                    scene.getMeshByID('' + (u + q) + '00' + (v + r)).isVisible = true
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+
 
                     }
                 }
